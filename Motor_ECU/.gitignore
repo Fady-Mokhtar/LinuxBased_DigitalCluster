@@ -1,0 +1,34 @@
+# Ignore build artifacts and temporary files
+**/Debug/
+**/Release/
+**/.metadata/
+**/.settings/
+
+# Ignore binary files and executables
+*.bin
+*.hex
+*.elf
+*.exe
+*.out
+
+# Ignore object files
+*.o
+*.obj
+*.d
+*.su
+*.su~
+*.suo
+*.ilk
+
+# Ignore other generated files
+*.dep
+*.lis
+*.lst
+*.map
+*.bak
+*.swp
+*.tmp
+
+# Ignore system and hidden files
+.DS_Store
+Thumbs.db
