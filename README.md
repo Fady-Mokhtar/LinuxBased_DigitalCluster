@@ -1,34 +1,18 @@
-# Motor ECU Feature Development Guide
+# LinuxBased_DigitalCluster
+# Instructions for Feature Branch Workflow
 
-Welcome to the Motor ECU feature development guide. This document provides comprehensive instructions for developers on how to effectively contribute to the development of features within the Motor ECU feature branch, following established best practices and workflows.
+1. **Feature Branch Creation**: Create a main feature branch from the main codebase (e.g., `master` or `main` branch). For example, if we're working on a feature called "Authentication" for an e-commerce website, you can create the feature branch by executing:
+   
+   - *Example*: Create a branch named `feature/authentication`.
 
-## Getting Started
+2. **Sub-Branches Creation**: Each developer working on the feature creates their own sub-branch from the main feature branch. These sub-branches should have a naming convention that reflects the feature or task being worked on. For example, if we have two tasks within the "Authentication" feature - "User Login" and "User Registration", you can create sub-branches for each task:
+   
+   - *Example*: For the "User Login" task, create a branch named `feature/authentication/user-login`.
+   
+   - *Example*: For the "User Registration" task, create a branch named `feature/authentication/user-registration`.
 
-To commence your work on Motor ECU features, adhere to the following steps:
+3. **Individual Work**: Developers work independently on their respective sub-branches, implementing the specific tasks or features assigned to them.
 
-1. **Clone the Repository**: Begin by cloning the project repository to your local machine to establish a local working environment.
+4. **Collaboration and Integration**: Once a developer completes their work on their sub-branch, they create a pull request to merge their changes into the main feature branch. Other developers can review and provide feedback on the changes as needed.
 
-2. **Create Sub-Branch**: For each task you're assigned, create a dedicated sub-branch from the main feature branch (`Feature/Motor_ECU`).
-
-3. **Commence Work**: Initiate your task or feature development within the designated sub-branch, ensuring all modifications to the Motor ECU setup are encapsulated within this branch.
-
-4. **Commit Changes**: As you progress with your task or feature development, commit your changes regularly to ensure a granular record of your work.
-
-5. **Push Changes**: Upon completing your work on the sub-branch, push your commits to the remote repository to synchronize your changes.
-
-## Collaboration and Integration
-
-Following the completion of task or feature development, adhere to the following steps to seamlessly integrate your changes into the main project:
-
-1. **Create Pull Request**: Initiate a pull request to merge your task or feature sub-branch into the main feature branch (`Feature/Motor_ECU`), encompassing all modifications made during development.
-
-2. **Review and Merge**: Facilitate a comprehensive review process, soliciting feedback from team members. Upon approval, your changes will be merged into the main project, facilitating integration of the Motor ECU feature.
-
-## Additional Notes
-
-- Effective communication and collaboration among team members are paramount to ensuring smooth project development.
-- In the event of queries or issues, do not hesitate to seek assistance from fellow team members or project leads.
-
-We appreciate your dedication to the development of the Motor ECU feature and look forward to your valuable contributions.
-
-Happy coding!
+5. **Merge into Feature Branch**: After the changes are reviewed and approved, they are merged into the main feature branch.
