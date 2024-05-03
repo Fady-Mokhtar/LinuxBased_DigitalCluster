@@ -37,6 +37,16 @@
  */
 #define PEDAL_UPPER_BOUND 100
 
+/**
+ * @brief ADC handler for pedal readings.
+ *
+ * This macro defines the ADC handler used for reading pedal values in the application.
+ * When reading pedal values from the ADC, this handler is used to interact with the ADC peripheral.
+ * The specific ADC handler (e.g., ADC1, ADC2, etc.) is assigned to this macro.
+ */
+#define PEDAL_ADC_HANDLER ADC1
+
+
 
 
 
