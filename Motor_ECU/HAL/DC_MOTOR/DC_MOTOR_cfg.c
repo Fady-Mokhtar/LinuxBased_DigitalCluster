@@ -12,7 +12,7 @@ const DC_MOTOR_CfgType DC_MOTOR_CfgParam[DC_MOTOR_UNITS] =
 		GPIO_PIN_13,
 		TIM2,
 		TIM_CHANNEL_1,
-		72,
+		8,
 		DC_MOTOR_F_PWM,
 		DC_MOTOR_PWM_RES
 	}

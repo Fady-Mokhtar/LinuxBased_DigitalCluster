@@ -64,7 +64,7 @@ void DC_MOTOR_Init(uint8_t au8_MOTOR_Instance);
  * @param au8_DIR Motor Direction DIR_CW or DIR_CCW
  * @param au16_SPEED Motor Speed
  */
-void DC_MOTOR_Start(uint8_t au8_MOTOR_Instance, uint8_t au8_DIR, uint16_t au16_SPEED);
+void DC_MOTOR_Start(uint8_t au8_MOTOR_Instance, uint8_t au8_DIR, uint8_t au8_SPEED);
 
 /**
  * @brief Sets the Motor speed to the given value
@@ -72,7 +72,7 @@ void DC_MOTOR_Start(uint8_t au8_MOTOR_Instance, uint8_t au8_DIR, uint16_t au16_S
  * @param au8_MOTOR_Instance Instance number as defined in DC_MOTOR_cfg.c
  * @param au16_SPEED Motor Speed
  */
-void DC_MOTOR_Set_Speed(uint8_t au8_MOTOR_Instance, uint16_t au16_SPEED);
+void DC_MOTOR_Set_Speed(uint8_t au8_MOTOR_Instance, uint8_t au8_SPEED);
 
 /**
  * @brief Sets the Rotation direction of the motor to the given direction

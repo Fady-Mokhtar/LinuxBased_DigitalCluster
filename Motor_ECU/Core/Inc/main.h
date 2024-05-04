@@ -49,7 +49,7 @@ extern "C" {
 /* USER CODE BEGIN EM */
 
 /* USER CODE END EM */
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -58,6 +58,7 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
@@ -67,5 +68,3 @@ void Error_Handler(void);
 #endif
 
 #endif /* __MAIN_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
