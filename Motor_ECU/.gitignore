@@ -3,7 +3,7 @@
 **/Release/
 **/.metadata/
 **/.settings/
-
+**/.vscode/
 # Ignore binary files and executables
 *.bin
 *.hex
