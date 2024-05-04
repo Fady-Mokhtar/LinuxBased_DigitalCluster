@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "main.h": "c",
+        "dc_motor.h": "c",
+        "dc_motor_cfg.h": "c",
+        "stm32f1xx_hal.h": "c"
+    }
+}
