@@ -14,7 +14,8 @@
 /********************************************************************************************************/
 #include "MotorControl.h"
 #include "PID.h"
-
+#include "Pedal.h"
+#include <stdint.h>
 /********************************************************************************************************/
 /************************************************Defines*************************************************/
 /********************************************************************************************************/
@@ -57,6 +58,26 @@ PIDController pid =
 void MotorControl_init()
 {
    PIDController_Init(&pid);
+}
+
+void MotorControl_update()
+{
+
+	/* Get Pedal Read */
+	uint32_t PedalRead = Pedal_getRead();
+
+	/* Determine Target speed */
+	float targetSpeed = (PedalRead * MOTOR_MAX_SPEED) / 100.0;
+
+	/* Get Current speed */
+	/*encoder code*/
+	float currentSpeed;
+	/* Get output signal using PID */
+	float controlSignal = PIDController_Update(&pid, targetSpeed, currentSpeed);
+
+	/* Send the output signal to the Motor Driver
+
+
 }
 
 
