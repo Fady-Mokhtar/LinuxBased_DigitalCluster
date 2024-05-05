@@ -35,7 +35,7 @@
 
 
 
-uint32_t Encoder_getRead(void);
+uint32_t Encoder_motorSpeed(void);
 
 
 #endif

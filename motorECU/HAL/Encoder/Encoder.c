@@ -59,7 +59,7 @@ ADC_HandleTypeDef ADCHandler =
 /*********************************************APIs Implementation****************************************/
 /********************************************************************************************************/
 
-uint32_t Encoder_getRead(void)
+uint32_t Encoder_motorSpeed(void)
 {
 	HAL_ADC_PollForConversion(&ADCHandler, 1);
 	uint32_t ADCRead = HAL_ADC_GetValue(&ADCHandler);
