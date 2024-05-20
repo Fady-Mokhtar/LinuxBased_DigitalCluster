@@ -1,7 +1,7 @@
 
 
-#include "DC_MOTOR/DC_MOTOR.h"
-#include "DC_MOTOR/DC_MOTOR_cfg.h"
+#include "DC_MOTOR.h"
+#include "DC_MOTOR_cfg.h"
 //#include "../../Inc/main.h"
 
 /* Period value. Calculated during DC_MOTOR_Init */
