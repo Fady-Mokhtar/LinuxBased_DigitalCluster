@@ -99,7 +99,7 @@ int main(void)
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
   DC_MOTOR_Init(0);
-  DC_MOTOR_Start(0, DIR_CW, 50);
+  DC_MOTOR_Start(0, DIR_CCW, 50);
   /* USER CODE END 2 */
 
   /* Infinite loop */
