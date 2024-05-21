@@ -1,71 +1,48 @@
-/**
- * @file Encoder.c
- * @author Ahmed Talaat
- * @brief
- * @version 0.1
- * @date 2024-05-01
- *
- * @copyright Copyright (c) 2024
- *
- */
-
-/********************************************************************************************************/
-/************************************************Includes************************************************/
-/********************************************************************************************************/
-#include "stm32f1xx.h"
 #include "Encoder.h"
 
+// Global variables to store the last count and time
+static uint32_t last_count = 0;
+static uint32_t last_time = 0;
 
-/********************************************************************************************************/
-/************************************************Defines*************************************************/
-/********************************************************************************************************/
+void Encoder_Init(TIM_HandleTypeDef *htim) {
+    // Start the encoder interface in encoder mode
+    HAL_TIM_Encoder_Start(htim, TIM_CHANNEL_ALL);
+}
 
+uint32_t Encoder_GetCounter(TIM_HandleTypeDef *htim) {
+    // Get the current encoder counter value
+    return __HAL_TIM_GET_COUNTER(htim);
+}
 
+uint32_t Encoder_GetRPM(TIM_HandleTypeDef *htim) {
+    // Get the current encoder counter value
+    uint32_t current_count = Encoder_GetCounter(htim);
 
-/********************************************************************************************************/
-/************************************************Types***************************************************/
-/********************************************************************************************************/
+    // Get the current time in milliseconds
+    uint32_t current_time = HAL_GetTick();
 
+    // Calculate the time difference in milliseconds
+    uint32_t time_diff = current_time - last_time;
 
-#define ADC_LOWER_LIMIT 0
+    // Ensure time_diff is non-zero to avoid division by zero
+    if (time_diff == 0) {
+        return 0;
+    }
 
+    // Calculate the pulse difference
+    int32_t pulse_diff = current_count - last_count;
 
-#define ADC_UPPER_LIMIT 4095
+    // Handle overflow (assuming a 16-bit timer)
+    if (pulse_diff < 0) {
+        pulse_diff += 0xFFFF;
+    }
 
+    // Calculate the RPM: (pulse_diff * 60000) / (PPR * time_diff)
+    uint32_t rpm = (pulse_diff ) / (PPR * time_diff);
 
-/********************************************************************************************************/
-/************************************************Variables***********************************************/
-/********************************************************************************************************/
+    // Update the last count and time for the next calculation
+    last_count = current_count;
+    last_time = current_time;
 
-ADC_HandleTypeDef ADCHandler =
-{
-	 .Instance = PEDAL_ADC_HANDLER,
-	 .Init.ScanConvMode = ADC_SCAN_DISABLE,
-	 .Init.ContinuousConvMode = ENABLE,
-	 .Init.DiscontinuousConvMode = DISABLE,
-	 .Init.ExternalTrigConv = ADC_SOFTWARE_START,
-	 .Init.DataAlign = ADC_DATAALIGN_RIGHT,
-	 .Init.NbrOfConversion = 1,
-};
-
-
-/********************************************************************************************************/
-/*****************************************Static Functions Prototype*************************************/
-/********************************************************************************************************/
-
-
-
-/********************************************************************************************************/
-/*********************************************APIs Implementation****************************************/
-/********************************************************************************************************/
-
-uint32_t Encoder_motorSpeed(void)
-{
-	HAL_ADC_PollForConversion(&ADCHandler, 1);
-	uint32_t ADCRead = HAL_ADC_GetValue(&ADCHandler);
-
-    uint32_t Encoder_Read = ((ADCRead - ADC_LOWER_LIMIT) * (ENCODER_UPPER_LIMIT - ENCODER_LOWER_LIMIT)) /
-                          (ADC_UPPER_LIMIT - ADC_LOWER_LIMIT) + ENCODER_LOWER_LIMIT;
-
-	return Encoder_Read;
+    return rpm;
 }
