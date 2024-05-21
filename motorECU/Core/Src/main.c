@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "DC_MOTOR.h"
+#include "Pedal.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -99,16 +100,25 @@ int main(void)
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
   DC_MOTOR_Init(0);
-  DC_MOTOR_Start(0, DIR_CCW, 50);
+  DC_MOTOR_Start(0, DIR_CCW, 0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  HAL_ADC_Start(&hadc1);
+  volatile int  x = 0;
+  int oldx = 0;
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	x  = Pedal_getRead();
+	if(x != oldx)
+		DC_MOTOR_Set_Speed(0, x);
+
+	oldx = x;
+
   }
   /* USER CODE END 3 */
 }
