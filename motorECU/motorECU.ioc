@@ -1,10 +1,10 @@
 #MicroXplorer Configuration settings - do not modify
-ADC1.Channel-1\#ChannelRegularConversion=ADC_CHANNEL_1
+ADC1.Channel-2\#ChannelRegularConversion=ADC_CHANNEL_1
 ADC1.ContinuousConvMode=ENABLE
-ADC1.IPParameters=Rank-1\#ChannelRegularConversion,master,Channel-1\#ChannelRegularConversion,SamplingTime-1\#ChannelRegularConversion,NbrOfConversionFlag,ContinuousConvMode
+ADC1.IPParameters=Rank-2\#ChannelRegularConversion,Channel-2\#ChannelRegularConversion,SamplingTime-2\#ChannelRegularConversion,NbrOfConversionFlag,master,ContinuousConvMode
 ADC1.NbrOfConversionFlag=1
-ADC1.Rank-1\#ChannelRegularConversion=1
-ADC1.SamplingTime-1\#ChannelRegularConversion=ADC_SAMPLETIME_1CYCLE_5
+ADC1.Rank-2\#ChannelRegularConversion=1
+ADC1.SamplingTime-2\#ChannelRegularConversion=ADC_SAMPLETIME_1CYCLE_5
 ADC1.master=1
 CAD.formats=
 CAD.pinconfig=
@@ -49,6 +49,7 @@ NVIC.SysTick_IRQn=true\:15\:0\:false\:false\:true\:false\:true\:false
 NVIC.UsageFault_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false
 PA0-WKUP.Locked=true
 PA0-WKUP.Signal=S_TIM2_CH1_ETR
+PA1.Locked=true
 PA1.Signal=ADCx_IN1
 PA10.Mode=Asynchronous
 PA10.Signal=USART1_RX
