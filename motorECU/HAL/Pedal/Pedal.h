@@ -21,6 +21,30 @@
 /************************************************Defines*************************************************/
 /********************************************************************************************************/
 
+/**
+ * @brief Macro to map a value from one range to another.
+ *
+ * This macro maps an input value from an input range defined by input minimum and maximum
+ * to an output range defined by output minimum and maximum.
+ *
+ * @param VAL The value to be mapped.
+ * @param IN_MIN The minimum value of the input range.
+ * @param IN_MAX The maximum value of the input range.
+ * @param OUT_MIN The minimum value of the output range.
+ * @param OUT_MAX The maximum value of the output range.
+ * @return The mapped value within the specified output range.
+ */
+#define MAP_VALUE(VAL, IN_MIN, IN_MAX, OUT_MIN, OUT_MAX) \
+    (((VAL) - (IN_MIN)) * ((OUT_MAX) - (OUT_MIN)) / ((IN_MAX) - (IN_MIN)) + (OUT_MIN))
+
+/**
+ * @brief Macro to map an ADC value to the defined pedal press range.
+ *
+ * This macro maps an ADC value to the pedal press range defined by PEDAL_LOWER_BOUND and PEDAL_UPPER_BOUND.
+ */
+#define MAP_ADC_TO_PEDAL(ADC_VAL) \
+    MAP_VALUE((ADC_VAL), PEDAL_LOWER_BOUND_ADC, PEDAL_UPPER_BOUND_ADC, PEDAL_LOWER_BOUND, PEDAL_UPPER_BOUND)
+
 
 
 /********************************************************************************************************/

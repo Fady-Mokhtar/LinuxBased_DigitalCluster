@@ -26,21 +26,7 @@
 /************************************************Types***************************************************/
 /********************************************************************************************************/
 
-/**
- * @brief Minimum ADC value corresponding to the minimum pedal press.
- *
- * This macro defines the minimum ADC value corresponding to the minimum amount of pressure required on the pedal.
- * It represents the lowest possible value that the ADC can output.
- */
-#define PEDAL_LOWER_BOUND_ADC 0
 
-/**
- * @brief Maximum ADC value corresponding to the maximum pedal press.
- *
- * This macro defines the maximum ADC value corresponding to the maximum amount of pressure allowed on the pedal.
- * It represents the highest possible value that the ADC can output given its 12-bit resolution (4095).
- */
-#define PEDAL_UPPER_BOUND_ADC 4095
 
 
 /********************************************************************************************************/
@@ -78,5 +64,5 @@ uint32_t Pedal_getRead(void)
     uint32_t pedalPress = ((ADCRead - PEDAL_LOWER_BOUND_ADC) * (PEDAL_UPPER_BOUND - PEDAL_LOWER_BOUND)) /
                           (PEDAL_UPPER_BOUND_ADC - PEDAL_LOWER_BOUND_ADC) + PEDAL_LOWER_BOUND;
 
-	return ADCRead;
+	return pedalPress;
 }
