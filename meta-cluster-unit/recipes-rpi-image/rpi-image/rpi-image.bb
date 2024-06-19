@@ -2,9 +2,12 @@ SUMMARY = "A custom image for a cluster unit."
 
 require recipes-sato/images/core-image-sato.bb
 
-IMAGE_INSTALL:append= " vsomeip python3 wayland x11vnc cinematicexperience liberation-fonts \
+IMAGE_INSTALL:append= " vsomeip python3 wayland cinematicexperience liberation-fonts \
                         qtbase-tools qtbase qtdeclarative qtimageformats qtmultimedia qtquickcontrols2 qtquickcontrols \
-                        qtbase-plugins qtwayland qtgraphicaleffects cmake make gcc g++ dhcpcd "
+                        qtbase-plugins qtwayland qtgraphicaleffects cmake make \
+                        vsomeip-compile boost mpv python3-spidev "
+
+IMAGE_INSTALL:remove= "splash psplash"
 
 IMAGE_LINGUAS = " "
 
