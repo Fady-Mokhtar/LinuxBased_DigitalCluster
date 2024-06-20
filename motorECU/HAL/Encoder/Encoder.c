@@ -38,7 +38,7 @@ uint32_t Encoder_GetRPM(TIM_HandleTypeDef *htim) {
     }
 
     // Calculate the RPM: (pulse_diff * 60000) / (PPR * time_diff)
-    uint32_t rpm = (pulse_diff ) / (PPR * time_diff);
+    uint32_t rpm = (pulse_diff ) * 60000 / (PPR * time_diff);
 
     // Update the last count and time for the next calculation
     last_count = current_count;
