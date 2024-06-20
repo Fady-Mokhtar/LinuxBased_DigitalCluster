@@ -22,7 +22,9 @@
 /* USER CODE BEGIN Includes */
 
 #include "DC_MOTOR.h" /*Include it in main.h*/
-
+#include "../../HAL/Encoder/Encoder.h"
+#include "Comm.h"
+#include "stdio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -108,10 +110,19 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  volatile int RPM = 0;
+  char Buff[100] = {0};
+  Comm_Init(COMM_UART);
+
   while (1)
   {
+	 HAL_Delay(100);
+	 RPM = Encoder_GetRPM(&htim1);
 
-    /* USER CODE END WHILE */
+	 int size = sprintf(Buff,"%d\n", RPM);
+	 Comm_Publish(COMM_UART, Buff, size);
+
+	 /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
