@@ -118,6 +118,7 @@ int main(void)
   volatile int RPM = 0;
   char Buff[100] = {0};
   Comm_Init(COMM_UART);
+  Encoder_Init(&htim1);
 
 
   while (1)
@@ -134,7 +135,7 @@ int main(void)
 	oldx = x;
 
 	RPM = Encoder_GetRPM(&htim1);
-	int size = sprintf(Buff,"%d\n", RPM);
+	int size = sprintf(Buff,"RPM = %d\n", RPM);
 	Comm_Publish(COMM_UART, (uint8_t*)Buff, size);
 
   }
