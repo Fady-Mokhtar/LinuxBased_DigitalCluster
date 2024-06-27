@@ -94,7 +94,7 @@ typedef enum
     This variable is initialized with the value NULL_t, indicating that it currently does not point to any function.
     It is declared as static, meaning it has file scope and retains its value between function calls.
 */
-static STK_CBF_t g_app_cbf = NULL_t;
+ STK_CBF_t g_app_cbf = NULL_t;
 
 /********************************************************************************************************/
 /*********************************************APIs Implementation****************************************/
@@ -218,12 +218,14 @@ MCALStatus_t STK_SetCallBack(STK_CBF_t Copy_CallBackAddr)
   \details Handles the SysTick interrupt and calls the registered callback function if available.
   \return  None
 */
+
+/*
 void SysTick_Handler(void)
 {
-    /* Check if a callback function is registered */
+
     if (g_app_cbf)
     {
-        /* Call the registered callback function */
+
         g_app_cbf();
     }
-}
+}*/

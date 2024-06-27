@@ -10,7 +10,7 @@
 /************************************************Defines*************************************************/
 /********************************************************************************************************/
 
-#define TICK_TIME	2
+#define TICK_TIME	1
 
 #define LED_TASKS	3
 
@@ -22,9 +22,8 @@
 typedef enum
 {
     Sched_runnble1,
-    Sched_runnble2,         
-    Sched_runnble3,         
-         
+	Sched_runnble2,
+	Sched_runnble3,
     __NUM_OF_RUNNABLES    /**< Total number of runnables. Do not modify.**/
 } RunnableName_t;
 
