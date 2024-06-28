@@ -20,7 +20,9 @@
 extern void Traffic_Green(void);
 extern void Traffic_Yellow(void);
 extern void Traffic_Red(void);
-
+extern void _SWITCH_getState_5MS_runnable(void);
+extern void GetSwitchState_50MS_runnable(void);
+extern void _DataCollect_100MS_runnable(void);
 
 /********************************************************************************************************/
 /************************************************Variables***********************************************/
@@ -31,29 +33,28 @@ extern void Traffic_Red(void);
 runnableStr_t Loc_arrStrRunnables[LED_TASKS] = {
         [0] = 
         {
-            .name = "green_runnable_1",
+            .name = "green_runnable_0",
 			.first_delayMS = 0,
-			.periodicity = 500,
+			.periodicity = 5,
 			.priority = 0,
-			.callback = Traffic_Green
+			.callback = _SWITCH_getState_5MS_runnable
         },
-
-        [1] = 
-        {
-            .name = "yellow_runnable_2",
+		[1] =
+		{
+			.name = "green_runnable_1",
 			.first_delayMS = 0,
-			.periodicity = 1000,
+			.periodicity = 50,
 			.priority = 0,
-			.callback = Traffic_Yellow
-        },
+			.callback = GetSwitchState_50MS_runnable
+		},
 		[2] =
 		{
-			.name = "red_runnable_3",
+			.name = "green_runnable_1",
 			.first_delayMS = 0,
-			.periodicity = 3000,
+			.periodicity = 100,
 			.priority = 0,
-			.callback = Traffic_Red
-		}
+			.callback = _DataCollect_100MS_runnable
+		},
 
 };
 
