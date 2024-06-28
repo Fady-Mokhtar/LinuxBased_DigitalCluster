@@ -15,6 +15,7 @@
 #define INDICATORS_LED_BIT   	3
 
 extern TIM_HandleTypeDef htim1;
+extern UART_HandleTypeDef huart1;
 
 uint8_t DataCollect_mcuData[4] = { 0 };
 
@@ -45,9 +46,11 @@ void _DataCollect_100MS_runnable(void)
 		Ind_value |= (1 << INDICATORS_LED_BIT);
 	}
 
-	DataCollect_mcuData[0] = RPM_value;
-	DataCollect_mcuData[1] = FUEL_TEMP_value;
-	DataCollect_mcuData[2] = GEAR_value;
-	DataCollect_mcuData[3] = Ind_value;
+	DataCollect_mcuData[0] = 100;//RPM_value;
+	DataCollect_mcuData[1] = 120;//FUEL_TEMP_value;
+	DataCollect_mcuData[2] = 140;//GEAR_value;
+	DataCollect_mcuData[3] = 160;//Ind_value;
+
+	  HAL_UART_Transmit(&huart1, DataCollect_mcuData, sizeof(DataCollect_mcuData), 1);
 }
 
