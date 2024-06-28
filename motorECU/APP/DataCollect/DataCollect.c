@@ -24,7 +24,7 @@ void _DataCollect_100MS_runnable(void)
 	uint8_t RPM_value = 0x00;
 	uint8_t FUEL_TEMP_value = 0x00;
 	uint8_t GEAR_value = 0x00;
-	uint8_t Ind_value = 0x00;
+	static uint8_t Ind_value = 0x00;
 
 	INDICATORS_updatePotValues();
 	HAL_Delay(2);
@@ -34,22 +34,24 @@ void _DataCollect_100MS_runnable(void)
 	GEAR_value = INDICATORS_getPotValue(POT_GEAR);
 
 	if (INDICATORS_isButtonPressed(BUTTON_LeftLed)) {
-		Ind_value |= (1 << LEFT_LED_BIT);
+		Ind_value ^= (1 << LEFT_LED_BIT);
 	}
 	if (INDICATORS_isButtonPressed(BUTTON_RightLed)) {
-		Ind_value |= (1 << RIGHT_LED_BIT);
+		Ind_value ^= (1 << RIGHT_LED_BIT);
 	}
 	if (INDICATORS_isButtonPressed(BUTTON_WaitingLed)) {
-		Ind_value |= (1 << WAITING_LED_BIT);
+		Ind_value ^= (1 << WAITING_LED_BIT);
 	}
 	if (INDICATORS_isButtonPressed(BUTTON_IndicatorsLed)) {
-		Ind_value |= (1 << INDICATORS_LED_BIT);
+		Ind_value ^= (1 << INDICATORS_LED_BIT);
 	}
 
-	DataCollect_mcuData[0] = 100;//RPM_value;
-	DataCollect_mcuData[1] = 120;//FUEL_TEMP_value;
-	DataCollect_mcuData[2] = 140;//GEAR_value;
-	DataCollect_mcuData[3] = 160;//Ind_value;
+	// Map [0-180] to [0-100]
+	RPM_value = ((RPM_value) * (80.0)) / (180.0);
+	DataCollect_mcuData[0] = RPM_value;
+	DataCollect_mcuData[1] = FUEL_TEMP_value;
+	DataCollect_mcuData[2] = GEAR_value;
+	DataCollect_mcuData[3] = Ind_value;
 
 	  HAL_UART_Transmit(&huart1, DataCollect_mcuData, sizeof(DataCollect_mcuData), 1);
 }
