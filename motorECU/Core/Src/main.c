@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -57,6 +58,9 @@ TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart1;
 
+osThreadId MCAL_SwitchstatHandle;
+osThreadId HAL_SwitchStateHandle;
+osThreadId DataCollectHandle;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -69,6 +73,10 @@ static void MX_USART1_UART_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_TIM1_Init(void);
+void MCAL_Switch_getstate5ms_task(void const * argument);
+void HAL_Switch_getstate50ms_task(void const * argument);
+void DataCollect_100ms_task(void const * argument);
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -132,21 +140,54 @@ int main(void)
   /* USER CODE BEGIN 2 */
   DC_MOTOR_Init(0);
   DC_MOTOR_Start(0, DIR_CCW, 0);
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   HAL_ADC_Start(&hadc1);
-  volatile int  x = 0;
-  int oldx = 0;
-  volatile int RPM = 0;
-  char Buff[100] = {0};
   Comm_Init(COMM_UART);
   Encoder_Init(&htim1);
   INDICATORS_init();
+  /* USER CODE END 2 */
 
-  sched_init();
-  sched_start();
+  /* USER CODE BEGIN RTOS_MUTEX */
+  /* add mutexes, ... */
+  /* USER CODE END RTOS_MUTEX */
+
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* add semaphores, ... */
+  /* USER CODE END RTOS_SEMAPHORES */
+
+  /* USER CODE BEGIN RTOS_TIMERS */
+  /* start timers, add new ones, ... */
+  /* USER CODE END RTOS_TIMERS */
+
+  /* USER CODE BEGIN RTOS_QUEUES */
+  /* add queues, ... */
+  /* USER CODE END RTOS_QUEUES */
+
+  /* Create the thread(s) */
+  /* definition and creation of MCAL_Switchstat */
+  osThreadDef(MCAL_Switchstat, MCAL_Switch_getstate5ms_task, osPriorityNormal, 0, 128);
+  MCAL_SwitchstatHandle = osThreadCreate(osThread(MCAL_Switchstat), NULL);
+
+  /* definition and creation of HAL_SwitchState */
+  osThreadDef(HAL_SwitchState, HAL_Switch_getstate50ms_task, osPriorityIdle, 0, 128);
+  HAL_SwitchStateHandle = osThreadCreate(osThread(HAL_SwitchState), NULL);
+
+  /* definition and creation of DataCollect */
+  osThreadDef(DataCollect, DataCollect_100ms_task, osPriorityIdle, 0, 128);
+  DataCollectHandle = osThreadCreate(osThread(DataCollect), NULL);
+
+  /* USER CODE BEGIN RTOS_THREADS */
+
+
+  /* USER CODE END RTOS_THREADS */
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+
 
   while (1)
   {
@@ -433,7 +474,7 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Channel1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
 
 }
@@ -453,29 +494,169 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin : PB12 */
-  GPIO_InitStruct.Pin = GPIO_PIN_12;
+  /*Configure GPIO pins : PA4 PA5 PA6 PA7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PB13 */
-  GPIO_InitStruct.Pin = GPIO_PIN_13;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
+extern const SWITCH_switchConfig_t Switches[_NUM_OF_SWITCHES];
 
+static uint8_t switchState[_NUM_OF_SWITCHES] = {0};
 /* USER CODE END 4 */
+
+/* USER CODE BEGIN Header_MCAL_Switch_getstate5ms_task */
+/**
+  * @brief  Function implementing the MCAL_Switchstat thread.
+  * @param  argument: Not used
+  * @retval None
+  */
+/* USER CODE END Header_MCAL_Switch_getstate5ms_task */
+void MCAL_Switch_getstate5ms_task(void const * argument)
+{
+  /* USER CODE BEGIN 5 */
+  /* Infinite loop */
+  for(;;)
+  {
+		static uint32_t switchPrevState[_NUM_OF_SWITCHES] = {0};
+		static uint32_t switchStateCounter[_NUM_OF_SWITCHES] = {0};
+		uint32_t iter = 0, currState = 0;
+
+		for (iter = 0; iter < _NUM_OF_SWITCHES; iter++) {
+			currState = HAL_GPIO_ReadPin(Switches[iter].port, Switches[iter].pin);
+			currState = currState ^ ((Switches[iter].mode == GPIO_PULLUP) ? 1 : 0);
+
+			if (currState == switchPrevState[iter]) {
+				switchStateCounter[iter]++;
+			} else {
+				switchStateCounter[iter] = 0;
+			}
+
+			if (switchStateCounter[iter] == 5) {
+				switchState[iter] = currState;
+				switchStateCounter[iter] = 0;
+			}
+
+			switchPrevState[iter] = currState;
+		}
+		osDelay(5);
+  }
+  /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_HAL_Switch_getstate50ms_task */
+/**
+* @brief Function implementing the HAL_SwitchState thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_HAL_Switch_getstate50ms_task */
+void HAL_Switch_getstate50ms_task(void const * argument)
+{
+  /* USER CODE BEGIN HAL_Switch_getstate50ms_task */
+  /* Infinite loop */
+  for(;;)
+  {
+	volatile uint8_t read = INDICATORS_getPotValue(POT_PEDAL);
+	INDICATORS_updatePotValues();
+	read++;
+	/*if(INDICATORS_isButtonPressed(BUTTON_MOTOR))
+	{
+		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_13);
+	}
+	/*if(SWITCH_getStateAsync(BUTTON_MOTOR) == SWITCH_PRESSED)
+	{
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
+	}
+	else if(SWITCH_getStateAsync(BUTTON_MOTOR) == SWITCH_RELEASED)
+	{
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
+	}*/
+    osDelay(50);
+  }
+  /* USER CODE END HAL_Switch_getstate50ms_task */
+}
+
+/* USER CODE BEGIN Header_DataCollect_100ms_task */
+/**
+* @brief Function implementing the DataCollect thread.
+* @param argument: Not used
+* @retval None
+*/
+
+#define LEFT_LED_BIT   			0
+#define RIGHT_LED_BIT   		1
+#define WAITING_LED_BIT   		2
+#define INDICATORS_LED_BIT   	3
+extern int DataCollect_mcuData[4];
+/* USER CODE END Header_DataCollect_100ms_task */
+void DataCollect_100ms_task(void const * argument)
+{
+  /* USER CODE BEGIN DataCollect_100ms_task */
+  /* Infinite loop */
+  for(;;)
+  {
+		uint8_t RPM_value = 0x00;
+		uint8_t FUEL_TEMP_value = 0x00;
+		uint8_t GEAR_value = 0x00;
+		uint8_t Ind_value = 0x00;
+
+		INDICATORS_updatePotValues();
+		HAL_Delay(2);
+
+		RPM_value = Encoder_GetRPM(&htim1);
+		FUEL_TEMP_value = INDICATORS_getPotValue(POT_FUEL_TEMP);
+		GEAR_value = INDICATORS_getPotValue(POT_GEAR);
+
+		if (INDICATORS_isButtonPressed(BUTTON_LeftLed)) {
+			Ind_value |= (1 << LEFT_LED_BIT);
+		}
+		if (INDICATORS_isButtonPressed(BUTTON_RightLed)) {
+			Ind_value |= (1 << RIGHT_LED_BIT);
+		}
+		if (INDICATORS_isButtonPressed(BUTTON_WaitingLed)) {
+			Ind_value |= (1 << WAITING_LED_BIT);
+		}
+		if (INDICATORS_isButtonPressed(BUTTON_IndicatorsLed)) {
+			Ind_value |= (1 << INDICATORS_LED_BIT);
+		}
+
+		DataCollect_mcuData[0] = 'a';//RPM_value;
+		DataCollect_mcuData[1] = 'b';//FUEL_TEMP_value;
+		DataCollect_mcuData[2] = 'c';//GEAR_value;
+		DataCollect_mcuData[3] = '\n ';//Ind_value;
+
+		  HAL_UART_Transmit(&huart1, DataCollect_mcuData, sizeof(DataCollect_mcuData), 0xFFFF);
+		  osDelay(100);
+  }
+  /* USER CODE END DataCollect_100ms_task */
+}
+
+/**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM3 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM3) {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.
