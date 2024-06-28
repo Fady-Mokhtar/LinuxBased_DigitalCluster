@@ -138,10 +138,6 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   HAL_ADC_Start(&hadc1);
-  volatile int  x = 0;
-  int oldx = 0;
-  volatile int RPM = 0;
-  char Buff[100] = {0};
   Comm_Init(COMM_UART);
   Encoder_Init(&htim1);
   INDICATORS_init();
@@ -155,18 +151,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	 /*
-	  *
-	  if(INDICATORS_isButtonPressed(BUTTON_MOTOR))
-	 {
-		 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
-		 HAL_Delay(1000);
-	 }
-	 else
-	 {
-		 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
-		 HAL_Delay(1000);
-	 }*/
+
 
 
   }
