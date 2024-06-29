@@ -6,8 +6,11 @@
 /********************************************************************************************************/
 
 typedef enum {
-    SWITCH_MOTOR,
-    _NUM_OF_SWITCHES
+    SWITCH_LeftLed,
+	SWITCH_RightLed,
+	SWITCH_WaitingLed,
+	SWITCH_IndicatorsLed,
+    _NUM_OF_SWITCHES,
 } SWITCH_SwitchesInSystem;
 
 #endif /* SWITCH_CFG_H_ */
